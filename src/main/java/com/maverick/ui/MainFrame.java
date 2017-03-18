@@ -8,47 +8,72 @@ import com.backendless.files.FileInfo;
 import com.maverick.utils.Messages;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 import static javax.swing.JOptionPane.*;
 
 public class MainFrame extends JFrame {
 
+    private static MainFrame instance = new MainFrame();
+
+    public static MainFrame getInstance() {
+        return instance;
+    }
+
     private JTextField makeDirField = new JTextField();
-
-    private JComboBox<String> fileComboBox = new JComboBox<>(
-            Backendless.Files.listing(Backendless.UserService.CurrentUser().getProperty("name").toString()).getData().stream().filter(fileInfo ->
-                    !fileInfo.getName().equals("shared+with+me")).map(FileInfo::getName).toArray(String[]::new)
-    );
-
+    private JComboBox<String> fileComboBox = new JComboBox<>(Backendless.Files.listing(Backendless.UserService.CurrentUser().getProperty("name").toString()).getData().stream().filter(fileInfo -> !fileInfo.getName().equals("shared+with+me")).map(FileInfo::getName).toArray(String[]::new));
     private JButton makeDirButton = new JButton("Make dir");
     private JButton deleteFileOrDirectoryButton = new JButton("Delete file or directory");
 
-    public MainFrame() {
+    private MainFrame() {
 
         setTitle("Main");
         setLayout(new GridBagLayout());
         setResizable(false);
 
-        makeDirField.setPreferredSize(new Dimension(200, 30));
-        add(makeDirField, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+//        makeDirField.setPreferredSize(new Dimension(200, 30));
+//        add(makeDirField, getTextFieldGridBagConstraints(0, 0));
+//
+//        add(makeDirButton, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
+//                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+//                new Insets(10, 10, 2, 2), 0, 0));
+//
+//        fileComboBox.setPreferredSize(new Dimension(200, 30));
+//        add(fileComboBox, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
+//                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+//                new Insets(10, 10, 2, 2), 0, 0));
+//
+//        deleteFileOrDirectoryButton.setPreferredSize(new Dimension(200, 30));
+//        add(deleteFileOrDirectoryButton, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
+//                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+//                new Insets(10, 10, 2, 2), 0, 0));
 
-        add(makeDirButton, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
 
-        fileComboBox.setPreferredSize(new Dimension(200, 30));
-        add(fileComboBox, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        JTabbedPane tabbedPane = new JTabbedPane();
 
-        deleteFileOrDirectoryButton.setPreferredSize(new Dimension(200, 30));
-        add(deleteFileOrDirectoryButton, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
+        tabbedPane.addTab("Profile", new JPanel());
+        tabbedPane.addTab("Files", getFileScrollPane());
+        add(tabbedPane, new GridBagConstraints(0, 0, 10, 10, 1.0, 1.0,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+                new Insets(0, 0, 0, 0), 0, 0));
+
+
+        tabbedPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                String name = Backendless.UserService.CurrentUser().getProperty("name").toString();
+                Backendless.Files.listing(name, "*", true).getData().forEach(fileInfo -> {
+
+                    System.out.println(fileInfo.getURL());
+
+                });
+            }
+        });
 
         pack();
         setLocationRelativeTo(null);
@@ -56,7 +81,7 @@ public class MainFrame extends JFrame {
 
         makeDirButton.addActionListener(e -> {
             try {
-                Backendless.Files.upload(new File("readme.txt"), Backendless.UserService.CurrentUser().getProperty("name") + "/" + makeDirField.getText(), new AsyncCallback<BackendlessFile>() {
+                Backendless.Files.upload(new File("readmeFile.txt"), Backendless.UserService.CurrentUser().getProperty("name") + "/" + makeDirField.getText(), new AsyncCallback<BackendlessFile>() {
                     @Override
                     public void handleResponse(BackendlessFile backendlessFile) {
                         showMessageDialog(MainFrame.this, "CREATE", Messages.SUCCESS, INFORMATION_MESSAGE);
@@ -99,5 +124,18 @@ public class MainFrame extends JFrame {
                 .filter(fileInfo -> !fileInfo.getName().equals("shared+with+me"))
                 .map(FileInfo::getName)
                 .forEach(directoryName -> fileComboBox.addItem(directoryName));
+    }
+
+    private JScrollPane getFileScrollPane() {
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("ROOT");
+        DefaultMutableTreeNode tEst = new DefaultMutableTreeNode("TEst");
+        tEst.add(new DefaultMutableTreeNode("tset"));
+        root.add(tEst);
+        JTree tree = new JTree(root);
+
+        JScrollPane scrollPane = new JScrollPane(tree);
+        scrollPane.setPreferredSize(new Dimension(700, 300));
+        return scrollPane;
     }
 }

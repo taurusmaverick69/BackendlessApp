@@ -20,8 +20,6 @@
             <artifactId>backendless</artifactId>
             <version>3.0.25</version>
         </dependency>
-
     </dependencies>
-
 
 </project>

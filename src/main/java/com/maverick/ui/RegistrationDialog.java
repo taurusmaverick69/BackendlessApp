@@ -3,12 +3,12 @@ package com.maverick.ui;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.maverick.utils.FileUtils;
 import com.maverick.utils.Messages;
 import com.maverick.utils.Sex;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -17,75 +17,56 @@ import java.util.stream.IntStream;
 
 import static com.backendless.Backendless.Files;
 import static com.backendless.Backendless.UserService;
+import static com.maverick.utils.FileUtils.readmeFile;
 import static com.maverick.utils.Messages.*;
+import static com.maverick.utils.UIUtils.getLabelGridBagConstraints;
+import static com.maverick.utils.UIUtils.getTextFieldGridBagConstraints;
 import static javax.swing.JOptionPane.*;
 
 public class RegistrationDialog extends JDialog {
+
+    private static final String SHARED_WITH_ME_DIRECTORY = "/shared with me";
 
     private JTextField emailField = new JTextField();
     private JTextField nameField = new JTextField();
     private JTextField passwordField = new JPasswordField();
     private JTextField confirmPasswordField = new JPasswordField();
-    private JComboBox<Integer> ageComboBox = new JComboBox<>(IntStream.range(5, 81).boxed().toArray(Integer[]::new));
+    private JComboBox<Integer> ageComboBox = new JComboBox<>(IntStream.rangeClosed(5, 80).boxed().toArray(Integer[]::new));
     private JComboBox<Sex> sexComboBox = new JComboBox<>(Sex.values());
     private JComboBox<String> countryComboBox = new JComboBox<>(Arrays.stream(Locale.getISOCountries()).map(country -> new Locale("", country).getDisplayCountry(Locale.ENGLISH)).toArray(String[]::new));
 
     public RegistrationDialog(Frame owner) {
         super(owner, true);
 
-        JLabel[] labels = new JLabel[7];
-        labels[0] = new JLabel("Email");
-        labels[1] = new JLabel("Login");
-        labels[2] = new JLabel("Password");
-        labels[3] = new JLabel("Confirm password");
-        labels[4] = new JLabel("Age");
-        labels[5] = new JLabel("Sex");
-        labels[6] = new JLabel("Country");
-
         setTitle("Registration");
         setLayout(new GridBagLayout());
         setResizable(false);
 
+        JLabel[] labels = {new JLabel("Email"), new JLabel("Login"), new JLabel("Password"), new JLabel("Confirm password"), new JLabel("Age"), new JLabel("Sex"), new JLabel("Country")};
         for (int i = 0; i < labels.length; i++)
-            add(labels[i], new GridBagConstraints(0, i, 1, 1, 1.0, 1.0,
-                    GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                    new Insets(15, 10, 2, 2), 0, 0));
+            add(labels[i], getLabelGridBagConstraints(0, i));
 
         emailField.setPreferredSize(new Dimension(200, 30));
-        add(emailField, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(emailField, getTextFieldGridBagConstraints(1, 0));
         emailField.setText("taurusmaverick69@gmail.com");
 
         nameField.setPreferredSize(new Dimension(200, 30));
-        add(nameField, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(nameField, getTextFieldGridBagConstraints(1, 1));
 
         passwordField.setPreferredSize(new Dimension(200, 30));
-        add(passwordField, new GridBagConstraints(1, 2, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(passwordField, getTextFieldGridBagConstraints(1, 2));
 
         confirmPasswordField.setPreferredSize(new Dimension(200, 30));
-        add(confirmPasswordField, new GridBagConstraints(1, 3, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(confirmPasswordField, getTextFieldGridBagConstraints(1, 3));
 
         ageComboBox.setPreferredSize(new Dimension(200, 30));
-        add(ageComboBox, new GridBagConstraints(1, 4, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(ageComboBox, getTextFieldGridBagConstraints(1, 4));
 
         sexComboBox.setPreferredSize(new Dimension(200, 30));
-        add(sexComboBox, new GridBagConstraints(1, 5, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(sexComboBox, getTextFieldGridBagConstraints(1, 5));
 
         countryComboBox.setPreferredSize(new Dimension(200, 30));
-        add(countryComboBox, new GridBagConstraints(1, 6, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(countryComboBox, getTextFieldGridBagConstraints(1, 6));
 
         JPanel panel = new JPanel(new FlowLayout());
         JButton okButton = new JButton("Ok");
@@ -120,14 +101,13 @@ public class RegistrationDialog extends JDialog {
                 public void handleResponse(BackendlessUser backendlessUser) {
                     showMessageDialog(RegistrationDialog.this, USER_SUCCESSFULLY_CREATED_CONFIRM_BY_EMAIL, SUCCESS, INFORMATION_MESSAGE);
                     try {
-                        Files.upload(new File("readme.txt"), backendlessUser.getProperty("name").toString() + "/shared with me");
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
+                        Files.upload(readmeFile, backendlessUser.getProperty("name").toString() + SHARED_WITH_ME_DIRECTORY);
+                    } catch (Exception ex) {
+                        showMessageDialog(RegistrationDialog.this, ex.getMessage(), Messages.ERROR, ERROR_MESSAGE);
                     }
                     dispose();
                     setVisible(false);
                 }
-
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
                     showMessageDialog(RegistrationDialog.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);

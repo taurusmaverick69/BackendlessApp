@@ -1,6 +1,5 @@
 package com.maverick.ui;
 
-import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
@@ -10,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static com.backendless.Backendless.UserService;
+import static com.maverick.utils.UIUtils.*;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -26,29 +26,21 @@ public class LoginFrame extends JFrame {
 
     private LoginFrame() {
 
-        JLabel[] labels = new JLabel[2];
-        labels[0] = new JLabel("Login");
-        labels[1] = new JLabel("Password");
-
         setTitle("Login");
         setLayout(new GridBagLayout());
         setResizable(false);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        JLabel[] labels = {new JLabel("Login"), new JLabel("Password")};
 
         for (int i = 0; i < labels.length; i++)
-            add(labels[i], new GridBagConstraints(0, i, 1, 1, 1.0, 1.0,
-                    GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                    new Insets(20, 10, 2, 2), 0, 0));
-
+            add(labels[i], getLabelGridBagConstraints(0, i));
 
         loginField.setPreferredSize(new Dimension(200, 30));
-        add(loginField, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(loginField, getTextFieldGridBagConstraints(1, 0));
 
         passwordField.setPreferredSize(new Dimension(200, 30));
-        add(passwordField, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(passwordField, getTextFieldGridBagConstraints(1, 1));
 
         JPanel panel = new JPanel(new FlowLayout());
         JButton okButton = new JButton("Ok");
@@ -58,18 +50,17 @@ public class LoginFrame extends JFrame {
         panel.add(registrationButton);
         panel.add(forgotPasswordButton);
 
-        add(panel, new GridBagConstraints(0, 2, 2, 1, 1.0, 1.0,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(10, 10, 2, 2), 0, 0));
+        add(panel, getPanelGridBagConstraints(2));
 
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
 
         okButton.addActionListener(e -> UserService.login(loginField.getText(), passwordField.getText(), new AsyncCallback<BackendlessUser>() {
+
             @Override
             public void handleResponse(BackendlessUser backendlessUser) {
-                new MainFrame();
+                MainFrame.getInstance();
                 dispose();
                 setVisible(false);
             }
