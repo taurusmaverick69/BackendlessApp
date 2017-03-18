@@ -2,6 +2,10 @@ package com.maverick;
 
 import com.backendless.Backendless;
 import com.maverick.ui.LoginFrame;
+import de.javasoft.plaf.synthetica.SyntheticaPlainLookAndFeel;
+
+import javax.swing.*;
+import java.text.ParseException;
 
 public class Runner {
 
@@ -9,8 +13,9 @@ public class Runner {
     private static final String SECRET_KEY = "557CF7CD-AEE8-1F78-FF1C-DBCC19336600";
     private static final String VERSION = "v1";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException, UnsupportedLookAndFeelException {
         Backendless.initApp(APP_ID, SECRET_KEY, VERSION);
+        UIManager.setLookAndFeel(new SyntheticaPlainLookAndFeel());
         LoginFrame.getInstance();
     }
 }
