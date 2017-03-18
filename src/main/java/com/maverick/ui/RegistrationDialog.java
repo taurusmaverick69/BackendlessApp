@@ -1,6 +1,5 @@
 package com.maverick.ui;
 
-import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
@@ -9,12 +8,15 @@ import com.maverick.utils.Sex;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import static com.backendless.Backendless.Files;
+import static com.backendless.Backendless.UserService;
 import static com.maverick.utils.Messages.*;
 import static javax.swing.JOptionPane.*;
 
@@ -113,14 +115,19 @@ public class RegistrationDialog extends JDialog {
             properties.put("country", countryComboBox.getSelectedItem());
             properties.put("age", ageComboBox.getSelectedItem());
             user.putProperties(properties);
-
-            Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
+            UserService.register(user, new AsyncCallback<BackendlessUser>() {
                 @Override
                 public void handleResponse(BackendlessUser backendlessUser) {
                     showMessageDialog(RegistrationDialog.this, USER_SUCCESSFULLY_CREATED_CONFIRM_BY_EMAIL, SUCCESS, INFORMATION_MESSAGE);
+                    try {
+                        Files.upload(new File("readme.txt"), backendlessUser.getProperty("name").toString() + "/shared with me");
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
                     dispose();
                     setVisible(false);
                 }
+
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
                     showMessageDialog(RegistrationDialog.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);

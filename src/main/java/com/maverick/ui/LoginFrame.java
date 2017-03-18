@@ -9,22 +9,22 @@ import com.maverick.utils.Messages;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.backendless.Backendless.UserService;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-
 public class LoginFrame extends JFrame {
 
-    private static final String APP_ID = "D814F351-7654-24CB-FFFF-290BB7E26800";
-    private static final String SECRET_KEY = "557CF7CD-AEE8-1F78-FF1C-DBCC19336600";
-    private static final String VERSION = "v1";
+    private static LoginFrame instance = new LoginFrame();
+
+    public static LoginFrame getInstance() {
+        return instance;
+    }
 
     private JTextField loginField = new JTextField();
     private JTextField passwordField = new JPasswordField();
 
-    public LoginFrame() {
-
-        Backendless.initApp(APP_ID, SECRET_KEY, VERSION);
+    private LoginFrame() {
 
         JLabel[] labels = new JLabel[2];
         labels[0] = new JLabel("Login");
@@ -66,11 +66,12 @@ public class LoginFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-
-        okButton.addActionListener(e -> Backendless.UserService.login(loginField.getText(), passwordField.getText(), new AsyncCallback<BackendlessUser>() {
+        okButton.addActionListener(e -> UserService.login(loginField.getText(), passwordField.getText(), new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser backendlessUser) {
-                System.out.println(backendlessUser);
+                new MainFrame();
+                dispose();
+                setVisible(false);
             }
 
             @Override
