@@ -116,16 +116,16 @@ public class MainFrame extends JFrame {
 
     private JScrollPane getScrollPaneWithFileTree() {
 
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("ROOT");
+        String name = Backendless.UserService.CurrentUser().getProperty("name").toString();
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(name);
         DefaultTreeModel model = new DefaultTreeModel(root);
         JTree tree = new JTree(model);
 
-        String name = Backendless.UserService.CurrentUser().getProperty("name").toString();
-        buildTreeFromPaths(model, Backendless.Files.listing(name, "*", true).getData().stream().map(FileInfo::getURL).collect(Collectors.toList()));
+        buildTreeFromPaths(model, Backendless.Files.listing(name, "*", true).getData().stream().map(fileInfo -> fileInfo.getURL().replace(name + "/", "")).collect(Collectors.toList()));
         for (int i = 0; i < tree.getRowCount(); i++) {
             tree.expandRow(i);
         }
-        tree.setRootVisible(false);
         JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setPreferredSize(new Dimension(700, 300));
         return scrollPane;
