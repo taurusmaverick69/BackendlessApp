@@ -8,12 +8,8 @@ import com.backendless.files.FileInfo;
 import com.maverick.utils.Messages;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.io.File;
-import java.util.Enumeration;
-import java.util.stream.Collectors;
 
 import static javax.swing.JOptionPane.*;
 
@@ -73,7 +69,7 @@ public class MainFrame extends JFrame {
                     @Override
                     public void handleResponse(BackendlessFile backendlessFile) {
                         showMessageDialog(MainFrame.this, "CREATE", Messages.SUCCESS, INFORMATION_MESSAGE);
-                        updateFileCombobox();
+                        updateFileComboBox();
                     }
 
                     @Override
@@ -87,15 +83,13 @@ public class MainFrame extends JFrame {
         });
 
         deleteFileOrDirectoryButton.addActionListener(e -> {
-
             String name = Backendless.UserService.CurrentUser().getProperty("name").toString();
             Backendless.Files.removeDirectory(name + "/" + fileComboBox.getSelectedItem().toString(), new AsyncCallback<Void>() {
                 @Override
                 public void handleResponse(Void aVoid) {
                     showMessageDialog(MainFrame.this, "Directory removed", Messages.SUCCESS, INFORMATION_MESSAGE);
-                    updateFileCombobox();
+                    updateFileComboBox();
                 }
-
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
                     showMessageDialog(MainFrame.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);
@@ -104,7 +98,7 @@ public class MainFrame extends JFrame {
         });
     }
 
-    private void updateFileCombobox() {
+    private void updateFileComboBox() {
         String name = Backendless.UserService.CurrentUser().getProperty("name").toString();
         fileComboBox.removeAllItems();
         Backendless.Files.listing(name).getData()
@@ -115,67 +109,8 @@ public class MainFrame extends JFrame {
     }
 
     private JScrollPane getScrollPaneWithFileTree() {
-
-        String name = Backendless.UserService.CurrentUser().getProperty("name").toString();
-
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(name);
-        DefaultTreeModel model = new DefaultTreeModel(root);
-        JTree tree = new JTree(model);
-
-        buildTreeFromPaths(model, Backendless.Files.listing(name, "*", true).getData().stream().map(fileInfo -> fileInfo.getURL().replace(name + "/", "")).collect(Collectors.toList()));
-        for (int i = 0; i < tree.getRowCount(); i++) {
-            tree.expandRow(i);
-        }
-        JScrollPane scrollPane = new JScrollPane(tree);
+        JScrollPane scrollPane = new JScrollPane(new BackendlessTree());
         scrollPane.setPreferredSize(new Dimension(700, 300));
         return scrollPane;
-    }
-
-    private void buildTreeFromPaths(DefaultTreeModel model, java.util.List<String> paths) {
-
-        paths.forEach(path -> {
-            // Fetch the root node
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-
-            // Split the string around the delimiter
-            String[] strings = path.split("/");
-
-            // Create a node object to use for traversing down the tree as it
-            // is being created
-            DefaultMutableTreeNode node = root;
-
-            // Iterate of the string array
-            for (String s : strings) {
-                // Look for the index of a node at the current level that
-                // has a value equal to the current string
-                int index = childIndex(node, s);
-
-                // Index less than 0, this is a new node not currently present on the tree
-                if (index < 0) {
-                    // Add the new node
-                    DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(s);
-                    node.insert(newChild, node.getChildCount());
-                    node = newChild;
-                }
-                // Else, existing node, skip to the next string
-                else {
-                    node = (DefaultMutableTreeNode) node.getChildAt(index);
-                }
-            }
-        });
-    }
-
-    private int childIndex(DefaultMutableTreeNode node, String childValue) {
-        Enumeration<DefaultMutableTreeNode> children = node.children();
-        int index = -1;
-
-        while (children.hasMoreElements() && index < 0) {
-            DefaultMutableTreeNode child = children.nextElement();
-
-            if (child.getUserObject() != null && childValue.equals(child.getUserObject())) {
-                index = node.getIndex(child);
-            }
-        }
-        return index;
     }
 }
