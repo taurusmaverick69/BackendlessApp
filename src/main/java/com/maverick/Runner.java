@@ -8,9 +8,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static com.maverick.utils.BackendlessUtils.APP_ID;
-import static com.maverick.utils.BackendlessUtils.SECRET_KEY;
-import static com.maverick.utils.BackendlessUtils.VERSION;
+import static com.maverick.utils.BackendlessUtils.*;
 
 public class Runner {
 
