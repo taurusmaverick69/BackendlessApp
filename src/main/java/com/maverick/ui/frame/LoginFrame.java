@@ -1,8 +1,10 @@
-package com.maverick.ui;
+package com.maverick.ui.frame;
 
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.maverick.ui.dialog.ForgotPasswordDialog;
+import com.maverick.ui.dialog.RegistrationDialog;
 import com.maverick.utils.Messages;
 
 import javax.swing.*;

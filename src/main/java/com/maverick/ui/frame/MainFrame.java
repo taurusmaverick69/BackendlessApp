@@ -1,10 +1,11 @@
-package com.maverick.ui;
+package com.maverick.ui.frame;
 
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
 import com.backendless.files.FileInfo;
+import com.maverick.ui.BackendlessTree;
 import com.maverick.utils.Messages;
 
 import javax.swing.*;
@@ -90,6 +91,7 @@ public class MainFrame extends JFrame {
                     showMessageDialog(MainFrame.this, "Directory removed", Messages.SUCCESS, INFORMATION_MESSAGE);
                     updateFileComboBox();
                 }
+
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
                     showMessageDialog(MainFrame.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);
@@ -109,7 +111,7 @@ public class MainFrame extends JFrame {
     }
 
     private JScrollPane getScrollPaneWithFileTree() {
-        JScrollPane scrollPane = new JScrollPane(new BackendlessTree());
+        JScrollPane scrollPane = new JScrollPane(BackendlessTree.getInstance());
         scrollPane.setPreferredSize(new Dimension(700, 300));
         return scrollPane;
     }

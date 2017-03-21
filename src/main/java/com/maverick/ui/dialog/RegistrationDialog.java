@@ -1,4 +1,4 @@
-package com.maverick.ui;
+package com.maverick.ui.dialog;
 
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
@@ -17,7 +17,6 @@ import java.util.stream.IntStream;
 
 import static com.backendless.Backendless.Files;
 import static com.backendless.Backendless.UserService;
-import static com.maverick.utils.FileUtils.readmeFile;
 import static com.maverick.utils.Messages.*;
 import static com.maverick.utils.UIUtils.getLabelGridBagConstraints;
 import static com.maverick.utils.UIUtils.getTextFieldGridBagConstraints;
@@ -101,7 +100,7 @@ public class RegistrationDialog extends JDialog {
                 public void handleResponse(BackendlessUser backendlessUser) {
                     showMessageDialog(RegistrationDialog.this, USER_SUCCESSFULLY_CREATED_CONFIRM_BY_EMAIL, SUCCESS, INFORMATION_MESSAGE);
                     try {
-                        Files.upload(readmeFile, backendlessUser.getProperty("name").toString() + SHARED_WITH_ME_DIRECTORY);
+                        Files.upload(FileUtils.readme, backendlessUser.getProperty("name").toString() + SHARED_WITH_ME_DIRECTORY);
                     } catch (Exception ex) {
                         showMessageDialog(RegistrationDialog.this, ex.getMessage(), Messages.ERROR, ERROR_MESSAGE);
                     }

@@ -1,4 +1,4 @@
-package com.maverick.ui;
+package com.maverick.ui.dialog;
 
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;

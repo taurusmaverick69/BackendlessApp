@@ -4,5 +4,5 @@ import java.io.File;
 
 public class FileUtils {
 
-    public static File readmeFile = new File("readmeFile.txt");
+    public static File readme = new File("readme.txt");
 }
