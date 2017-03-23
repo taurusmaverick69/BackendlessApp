@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static com.maverick.utils.Messages.PASSWORD_HAS_BEEN_SENT;
-import static com.maverick.utils.Messages.SUCCESS;
+import static com.maverick.utils.Messages.SUCCESS_TITLE;
 import static com.maverick.utils.UIUtils.getLabelGridBagConstraints;
 import static com.maverick.utils.UIUtils.getPanelGridBagConstraints;
 import static com.maverick.utils.UIUtils.getTextFieldGridBagConstraints;
@@ -43,14 +43,14 @@ public class ForgotPasswordDialog extends JDialog {
         okButton.addActionListener(e -> Backendless.UserService.restorePassword(loginField.getText(), new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void aVoid) {
-                showMessageDialog(ForgotPasswordDialog.this, PASSWORD_HAS_BEEN_SENT, SUCCESS, INFORMATION_MESSAGE);
+                showMessageDialog(ForgotPasswordDialog.this, PASSWORD_HAS_BEEN_SENT, SUCCESS_TITLE, INFORMATION_MESSAGE);
                 dispose();
                 setVisible(false);
             }
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
-                showMessageDialog(ForgotPasswordDialog.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);
+                showMessageDialog(ForgotPasswordDialog.this, backendlessFault.getMessage(), Messages.ERROR_TITLE, ERROR_MESSAGE);
             }
         }));
 

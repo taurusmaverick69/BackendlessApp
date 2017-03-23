@@ -11,6 +11,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 
 import static com.maverick.utils.BackendlessUtils.getBackendlessPathFromTreePath;
+import static com.maverick.utils.Messages.*;
 import static com.maverick.utils.Messages.DIRECTORY_CREATED;
 import static com.maverick.utils.UIUtils.*;
 import static javax.swing.JOptionPane.*;
@@ -62,10 +63,10 @@ public class CreateDirectoryDialog extends JDialog {
             try {
                 Backendless.Files.upload(FileUtils.readme, backendlessPath);
             } catch (Exception ex) {
-                showMessageDialog(CreateDirectoryDialog.this, ex.getMessage(), Messages.ERROR, ERROR_MESSAGE);
+                showMessageDialog(CreateDirectoryDialog.this, ex.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
                 return;
             }
-            showMessageDialog(CreateDirectoryDialog.this, DIRECTORY_CREATED, Messages.SUCCESS, INFORMATION_MESSAGE);
+            showMessageDialog(CreateDirectoryDialog.this, DIRECTORY_CREATED, SUCCESS_TITLE, INFORMATION_MESSAGE);
             dispose();
             setVisible(false);
         });

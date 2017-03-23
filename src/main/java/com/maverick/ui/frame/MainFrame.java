@@ -69,13 +69,13 @@ public class MainFrame extends JFrame {
                 Backendless.Files.upload(new File("readmeFile.txt"), Backendless.UserService.CurrentUser().getProperty("name") + "/" + makeDirField.getText(), new AsyncCallback<BackendlessFile>() {
                     @Override
                     public void handleResponse(BackendlessFile backendlessFile) {
-                        showMessageDialog(MainFrame.this, "CREATE", Messages.SUCCESS, INFORMATION_MESSAGE);
+                        showMessageDialog(MainFrame.this, "CREATE", Messages.SUCCESS_TITLE, INFORMATION_MESSAGE);
                         updateFileComboBox();
                     }
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-                        showMessageDialog(MainFrame.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);
+                        showMessageDialog(MainFrame.this, backendlessFault.getMessage(), Messages.ERROR_TITLE, ERROR_MESSAGE);
                     }
                 });
             } catch (Exception e1) {
@@ -88,13 +88,13 @@ public class MainFrame extends JFrame {
             Backendless.Files.removeDirectory(name + "/" + fileComboBox.getSelectedItem().toString(), new AsyncCallback<Void>() {
                 @Override
                 public void handleResponse(Void aVoid) {
-                    showMessageDialog(MainFrame.this, "Directory removed", Messages.SUCCESS, INFORMATION_MESSAGE);
+                    showMessageDialog(MainFrame.this, "Directory removed", Messages.SUCCESS_TITLE, INFORMATION_MESSAGE);
                     updateFileComboBox();
                 }
 
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
-                    showMessageDialog(MainFrame.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);
+                    showMessageDialog(MainFrame.this, backendlessFault.getMessage(), Messages.ERROR_TITLE, ERROR_MESSAGE);
                 }
             });
         });

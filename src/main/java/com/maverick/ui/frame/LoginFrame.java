@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static com.backendless.Backendless.UserService;
+import static com.maverick.utils.Messages.*;
 import static com.maverick.utils.UIUtils.*;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -69,7 +70,7 @@ public class LoginFrame extends JFrame {
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
-                showMessageDialog(LoginFrame.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);
+                showMessageDialog(LoginFrame.this, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
             }
         }));
 

@@ -3,9 +3,9 @@ package com.maverick.utils;
 import javax.swing.tree.TreePath;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class BackendlessUtils {
 
@@ -16,7 +16,7 @@ public class BackendlessUtils {
     private static final String DELIMITER = "/";
 
     public static String getBackendlessPathFromTreePath(TreePath treePath, String directoryName) {
-        List<String> paths = Arrays.stream(treePath.getPath()).map(Object::toString).collect(Collectors.toList());
+        List<String> paths = Arrays.stream(treePath.getPath()).map(Object::toString).collect(toList());
         paths.add(directoryName);
         return paths.stream().collect(joining(DELIMITER));
     }

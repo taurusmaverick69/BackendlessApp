@@ -79,11 +79,11 @@ public class RegistrationDialog extends JDialog {
 
         okButton.addActionListener(e -> {
             if (passwordField.getText().isEmpty()) {
-                showMessageDialog(RegistrationDialog.this, EMPTY_PASSWORD, WARNING, WARNING_MESSAGE);
+                showMessageDialog(RegistrationDialog.this, EMPTY_PASSWORD, WARNING_TITLE, WARNING_MESSAGE);
                 return;
             }
             if (!passwordField.getText().equals(confirmPasswordField.getText())) {
-                showMessageDialog(RegistrationDialog.this, PASSWORDS_DONT_MATCH_WARNING, WARNING, WARNING_MESSAGE);
+                showMessageDialog(RegistrationDialog.this, PASSWORDS_DONT_MATCH_WARNING, WARNING_TITLE, WARNING_MESSAGE);
                 return;
             }
             BackendlessUser user = new BackendlessUser();
@@ -98,18 +98,18 @@ public class RegistrationDialog extends JDialog {
             UserService.register(user, new AsyncCallback<BackendlessUser>() {
                 @Override
                 public void handleResponse(BackendlessUser backendlessUser) {
-                    showMessageDialog(RegistrationDialog.this, USER_SUCCESSFULLY_CREATED_CONFIRM_BY_EMAIL, SUCCESS, INFORMATION_MESSAGE);
+                    showMessageDialog(RegistrationDialog.this, USER_SUCCESSFULLY_CREATED_CONFIRM_BY_EMAIL, SUCCESS_TITLE, INFORMATION_MESSAGE);
                     try {
                         Files.upload(FileUtils.readme, backendlessUser.getProperty("name").toString() + SHARED_WITH_ME_DIRECTORY);
                     } catch (Exception ex) {
-                        showMessageDialog(RegistrationDialog.this, ex.getMessage(), Messages.ERROR, ERROR_MESSAGE);
+                        showMessageDialog(RegistrationDialog.this, ex.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
                     }
                     dispose();
                     setVisible(false);
                 }
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
-                    showMessageDialog(RegistrationDialog.this, backendlessFault.getMessage(), Messages.ERROR, ERROR_MESSAGE);
+                    showMessageDialog(RegistrationDialog.this, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
                 }
             });
         });
