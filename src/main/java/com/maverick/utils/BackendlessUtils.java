@@ -15,13 +15,13 @@ public class BackendlessUtils {
 
     private static final String DELIMITER = "/";
 
-    public static String getBackendlessPathFromTreePath(TreePath treePath, String directoryName) {
-        List<String> paths = Arrays.stream(treePath.getPath()).map(Object::toString).collect(toList());
-        paths.add(directoryName);
+    public static String getBackendlessPathFromTreePath(TreePath path, String directoryOrFileName) {
+        List<String> paths = Arrays.stream(path.getPath()).map(Object::toString).collect(toList());
+        paths.add(directoryOrFileName);
         return paths.stream().collect(joining(DELIMITER));
     }
 
-    public static String getBackendlessPathFromTreePath(TreePath treePath) {
-        return Arrays.stream(treePath.getPath()).map(Object::toString).collect(joining(DELIMITER));
+    public static String getBackendlessPathFromTreePath(TreePath path) {
+        return Arrays.stream(path.getPath()).map(Object::toString).collect(joining(DELIMITER));
     }
 }

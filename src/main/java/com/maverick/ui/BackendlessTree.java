@@ -3,6 +3,7 @@ package com.maverick.ui;
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.servercode.IBackendlessService;
 import com.maverick.ui.dialog.CreateDirectoryDialog;
 import com.maverick.ui.frame.MainFrame;
 import org.apache.commons.io.FileUtils;
@@ -40,15 +41,14 @@ public class BackendlessTree extends JTree {
 
     private static String DESKTOP_PATH = System.getProperty("user.home") + "/Desktop";
 
+    private String userName = Backendless.UserService.CurrentUser().getProperty("name").toString();
+
     private BackendlessTree() {
 
-        String name = Backendless.UserService.CurrentUser().getProperty("name").toString();
-
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(name);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(userName);
         DefaultTreeModel model = new DefaultTreeModel(root);
+        buildTreeFromPaths(model, Backendless.Files.listing(userName, "*", true).getData().stream().map(fileInfo -> fileInfo.getURL().replace(userName + "/", "")).collect(toList()));
         setModel(model);
-
-        buildTreeFromPaths(model, Backendless.Files.listing(name, "*", true).getData().stream().map(fileInfo -> fileInfo.getURL().replace(name + "/", "")).collect(toList()));
         for (int i = 0; i < getRowCount(); i++) {
             expandRow(i);
         }
@@ -92,7 +92,10 @@ public class BackendlessTree extends JTree {
             }
         });
 
-        createDirectoryItem.addActionListener(e -> new CreateDirectoryDialog(MainFrame.getInstance()));
+        createDirectoryItem.addActionListener(e -> {
+            new CreateDirectoryDialog(MainFrame.getInstance());
+            updateModel();
+        });
 
         removeDirectoryItem.addActionListener(e -> {
             int choose = showConfirmDialog(MainFrame.getInstance(), CONFIRM_REMOVE_DIRECTORY, REMOVE_TITLE, YES_NO_OPTION, QUESTION_MESSAGE);
@@ -100,17 +103,8 @@ public class BackendlessTree extends JTree {
                 Backendless.Files.removeDirectory(getBackendlessPathFromTreePath(getSelectionPath()), new AsyncCallback<Void>() {
                     @Override
                     public void handleResponse(Void aVoid) {
+                        updateModel();
                         showMessageDialog(MainFrame.getInstance(), DIRECTORY_REMOVED, SUCCESS_TITLE, INFORMATION_MESSAGE);
-
-
-                        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-                        root.removeAllChildren();
-                        model.reload();
-                        buildTreeFromPaths(model, Backendless.Files.listing(name, "*", true).getData().stream().map(fileInfo -> fileInfo.getURL().replace(name + "/", "")).collect(toList()));
-
-
-
-
                     }
 
                     @Override
@@ -123,6 +117,21 @@ public class BackendlessTree extends JTree {
 
         uploadFileItem.addActionListener(e -> {
 
+            JFileChooser chooser = new JFileChooser(DESKTOP_PATH);
+            chooser.setMultiSelectionEnabled(true);
+            int result = chooser.showDialog(MainFrame.getInstance(), "Upload");
+            if (result == JFileChooser.APPROVE_OPTION) {
+                Arrays.stream(chooser.getSelectedFiles()).forEach(file -> {
+                    String path = getBackendlessPathFromTreePath(getSelectionPath());
+                    try {
+                        Backendless.Files.upload(file, path);
+                    } catch (Exception ex) {
+                        showMessageDialog(MainFrame.getInstance(), String.format(UPLOAD_FAILED, file.getName()), ERROR_TITLE, ERROR_MESSAGE);
+                    }
+                });
+                updateModel();
+                showMessageDialog(MainFrame.getInstance(), UPLOAD_COMPLETE, SUCCESS_TITLE, INFORMATION_MESSAGE);
+            }
         });
 
         downloadFileItem.addActionListener(e -> {
@@ -145,6 +154,7 @@ public class BackendlessTree extends JTree {
                 Backendless.Files.remove(getBackendlessPathFromTreePath(getSelectionPath()), new AsyncCallback<Void>() {
                     @Override
                     public void handleResponse(Void aVoid) {
+                        updateModel();
                         showMessageDialog(MainFrame.getInstance(), FILE_REMOVED, SUCCESS_TITLE, INFORMATION_MESSAGE);
                     }
 
@@ -195,5 +205,15 @@ public class BackendlessTree extends JTree {
 
     private static void enableAllMenuItems(MenuElement... elements) {
         Arrays.stream(elements).map(menuElement -> (JMenuItem) menuElement).forEach(menuItem -> menuItem.setEnabled(true));
+    }
+
+    private void updateModel() {
+        DefaultTreeModel model = (DefaultTreeModel) getModel();
+        ((DefaultMutableTreeNode) model.getRoot()).removeAllChildren();
+        model.reload();
+        buildTreeFromPaths(model, Backendless.Files.listing(userName, "*", true).getData().stream().map(fileInfo -> fileInfo.getURL().replace(userName + "/", "")).collect(toList()));
+        for (int i = 0; i < getRowCount(); i++) {
+            expandRow(i);
+        }
     }
 }

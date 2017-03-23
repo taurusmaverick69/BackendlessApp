@@ -19,4 +19,7 @@ public class Messages {
     public static final String FILE_DOWNLOADED = "File successfully downloaded";
     public static final String FILE_REMOVED = "File successfully removed";
     public static final String CONFIRM_REMOVE_FILE = "Are you sure want to remove file?";
+
+    public static final String UPLOAD_FAILED = "File %s hasn't been uploaded";
+    public static final String UPLOAD_COMPLETE = "Upload complete";
 }
