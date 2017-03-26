@@ -22,7 +22,8 @@ public class MainFrame extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Profile", new JPanel());
-        tabbedPane.addTab("Files", getScrollPaneWithFileTree());
+        tabbedPane.addTab("Files", BackendlessTree.getInstance());
+
         add(tabbedPane, new GridBagConstraints(0, 0, 10, 10, 1.0, 1.0,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(0, 0, 0, 0), 0, 0));
@@ -30,11 +31,5 @@ public class MainFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    private JScrollPane getScrollPaneWithFileTree() {
-        JScrollPane scrollPane = new JScrollPane(BackendlessTree.getInstance());
-        scrollPane.setPreferredSize(new Dimension(700, 300));
-        return scrollPane;
     }
 }

@@ -3,7 +3,6 @@ package com.maverick.ui;
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.backendless.servercode.IBackendlessService;
 import com.maverick.ui.dialog.CreateDirectoryDialog;
 import com.maverick.ui.frame.MainFrame;
 import org.apache.commons.io.FileUtils;
@@ -14,6 +13,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -39,11 +39,12 @@ public class BackendlessTree extends JTree {
         return instance;
     }
 
-    private static String DESKTOP_PATH = System.getProperty("user.home") + "/Desktop";
-
-    private String userName = Backendless.UserService.CurrentUser().getProperty("name").toString();
+    private static final String DESKTOP_PATH = System.getProperty("user.home") + "/Desktop";
+    private static String userName = Backendless.UserService.CurrentUser().getProperty("name").toString();
 
     private BackendlessTree() {
+
+        setPreferredSize(new Dimension(700, 300));
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(userName);
         DefaultTreeModel model = new DefaultTreeModel(root);

@@ -3,7 +3,6 @@ package com.maverick.ui.dialog;
 import com.backendless.Backendless;
 import com.maverick.ui.BackendlessTree;
 import com.maverick.utils.FileUtils;
-import com.maverick.utils.Messages;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -12,7 +11,6 @@ import java.awt.*;
 
 import static com.maverick.utils.BackendlessUtils.getBackendlessPathFromTreePath;
 import static com.maverick.utils.Messages.*;
-import static com.maverick.utils.Messages.DIRECTORY_CREATED;
 import static com.maverick.utils.UIUtils.*;
 import static javax.swing.JOptionPane.*;
 

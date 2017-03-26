@@ -10,9 +10,7 @@ import java.awt.*;
 
 import static com.maverick.utils.Messages.PASSWORD_HAS_BEEN_SENT;
 import static com.maverick.utils.Messages.SUCCESS_TITLE;
-import static com.maverick.utils.UIUtils.getLabelGridBagConstraints;
-import static com.maverick.utils.UIUtils.getPanelGridBagConstraints;
-import static com.maverick.utils.UIUtils.getTextFieldGridBagConstraints;
+import static com.maverick.utils.UIUtils.*;
 import static javax.swing.JOptionPane.*;
 
 public class ForgotPasswordDialog extends JDialog {

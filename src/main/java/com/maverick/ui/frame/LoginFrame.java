@@ -5,13 +5,12 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.maverick.ui.dialog.ForgotPasswordDialog;
 import com.maverick.ui.dialog.RegistrationDialog;
-import com.maverick.utils.Messages;
 
 import javax.swing.*;
 import java.awt.*;
 
 import static com.backendless.Backendless.UserService;
-import static com.maverick.utils.Messages.*;
+import static com.maverick.utils.Messages.ERROR_TITLE;
 import static com.maverick.utils.UIUtils.*;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;

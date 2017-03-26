@@ -4,7 +4,6 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.maverick.utils.FileUtils;
-import com.maverick.utils.Messages;
 import com.maverick.utils.Sex;
 
 import javax.swing.*;
@@ -107,6 +106,7 @@ public class RegistrationDialog extends JDialog {
                     dispose();
                     setVisible(false);
                 }
+
                 @Override
                 public void handleFault(BackendlessFault backendlessFault) {
                     showMessageDialog(RegistrationDialog.this, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
