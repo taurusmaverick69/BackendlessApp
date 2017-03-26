@@ -31,18 +31,18 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.JOptionPane.*;
 
-public class BackendlessTree extends JTree {
+public class BackendlessFiles extends JTree {
 
-    private static BackendlessTree instance = new BackendlessTree();
+    private static BackendlessFiles instance = new BackendlessFiles();
 
-    public static BackendlessTree getInstance() {
+    public static BackendlessFiles getInstance() {
         return instance;
     }
 
     private static final String DESKTOP_PATH = System.getProperty("user.home") + "/Desktop";
-    private static String userName = Backendless.UserService.CurrentUser().getProperty("name").toString();
+    private String userName = Backendless.UserService.CurrentUser().getProperty("name").toString();
 
-    private BackendlessTree() {
+    private BackendlessFiles() {
 
         setPreferredSize(new Dimension(700, 300));
 
