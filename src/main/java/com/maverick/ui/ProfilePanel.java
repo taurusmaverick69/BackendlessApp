@@ -26,7 +26,7 @@ public class ProfilePanel extends JPanel {
                 new Insets(10, 10, 0, 10), 0, 0));
     }
 
-    private JPanel getPhotoPanel() {
+    private static JPanel getPhotoPanel() {
 
         JPanel panel = new JPanel(new GridBagLayout());
 
@@ -45,7 +45,7 @@ public class ProfilePanel extends JPanel {
         return panel;
     }
 
-    private JPanel getInfoPanel() {
+    private static JPanel getInfoPanel() {
 
         BackendlessUser backendlessUser = Backendless.UserService.CurrentUser();
         JPanel panel = new JPanel(new GridBagLayout());
