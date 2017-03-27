@@ -22,4 +22,6 @@ public class Messages {
 
     public static final String UPLOAD_FAILED = "File %s hasn't been uploaded";
     public static final String UPLOAD_COMPLETE = "Upload complete";
+
+    public static final String EDIT_PROFILE_COMPLETE = "Profile successfully updated";
 }
