@@ -33,16 +33,10 @@ import static javax.swing.JOptionPane.*;
 
 public class BackendlessTree extends JTree {
 
-    private static BackendlessTree instance = new BackendlessTree();
-
-    public static BackendlessTree getInstance() {
-        return instance;
-    }
-
     private static final String DESKTOP_PATH = System.getProperty("user.home") + "/Desktop";
     private String userName = Backendless.UserService.CurrentUser().getProperty("name").toString();
 
-    private BackendlessTree() {
+    public BackendlessTree(MainFrame mainFrame) {
 
         setPreferredSize(new Dimension(700, 300));
 
@@ -94,23 +88,23 @@ public class BackendlessTree extends JTree {
         });
 
         createDirectoryItem.addActionListener(e -> {
-            new CreateDirectoryDialog(MainFrame.getInstance());
+            new CreateDirectoryDialog(mainFrame, this);
             updateModel();
         });
 
         removeDirectoryItem.addActionListener(e -> {
-            int choose = showConfirmDialog(MainFrame.getInstance(), CONFIRM_REMOVE_DIRECTORY, REMOVE_TITLE, YES_NO_OPTION, QUESTION_MESSAGE);
+            int choose = showConfirmDialog(mainFrame, CONFIRM_REMOVE_DIRECTORY, REMOVE_TITLE, YES_NO_OPTION, QUESTION_MESSAGE);
             if (choose == YES_OPTION) {
                 Backendless.Files.removeDirectory(getBackendlessPathFromTreePath(getSelectionPath()), new AsyncCallback<Void>() {
                     @Override
                     public void handleResponse(Void aVoid) {
                         updateModel();
-                        showMessageDialog(MainFrame.getInstance(), DIRECTORY_REMOVED, SUCCESS_TITLE, INFORMATION_MESSAGE);
+                        showMessageDialog(mainFrame, DIRECTORY_REMOVED, SUCCESS_TITLE, INFORMATION_MESSAGE);
                     }
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-                        showMessageDialog(MainFrame.getInstance(), backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
+                        showMessageDialog(mainFrame, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
                     }
                 });
             }
@@ -120,18 +114,18 @@ public class BackendlessTree extends JTree {
 
             JFileChooser chooser = new JFileChooser(DESKTOP_PATH);
             chooser.setMultiSelectionEnabled(true);
-            int result = chooser.showDialog(MainFrame.getInstance(), "Upload");
+            int result = chooser.showDialog(mainFrame, "Upload");
             if (result == JFileChooser.APPROVE_OPTION) {
                 Arrays.stream(chooser.getSelectedFiles()).forEach(file -> {
                     String path = getBackendlessPathFromTreePath(getSelectionPath());
                     try {
                         Backendless.Files.upload(file, path);
                     } catch (Exception ex) {
-                        showMessageDialog(MainFrame.getInstance(), String.format(UPLOAD_FAILED, file.getName()), ERROR_TITLE, ERROR_MESSAGE);
+                        showMessageDialog(mainFrame, String.format(UPLOAD_FAILED, file.getName()), ERROR_TITLE, ERROR_MESSAGE);
                     }
                 });
                 updateModel();
-                showMessageDialog(MainFrame.getInstance(), UPLOAD_COMPLETE, SUCCESS_TITLE, INFORMATION_MESSAGE);
+                showMessageDialog(mainFrame, UPLOAD_COMPLETE, SUCCESS_TITLE, INFORMATION_MESSAGE);
             }
         });
 
@@ -142,26 +136,26 @@ public class BackendlessTree extends JTree {
             HttpGet httpGet = new HttpGet(uri);
             try (InputStream content = HttpClientBuilder.create().build().execute(httpGet).getEntity().getContent()) {
                 FileUtils.copyInputStreamToFile(content, new File(DESKTOP_PATH, FilenameUtils.getName(uri)));
-                showMessageDialog(MainFrame.getInstance(), FILE_DOWNLOADED, SUCCESS_TITLE, INFORMATION_MESSAGE);
+                showMessageDialog(mainFrame, FILE_DOWNLOADED, SUCCESS_TITLE, INFORMATION_MESSAGE);
             } catch (IOException ex) {
-                showMessageDialog(MainFrame.getInstance(), ex.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
+                showMessageDialog(mainFrame, ex.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
             }
         });
 
         removeFileItem.addActionListener(e -> {
 
-            int option = showConfirmDialog(MainFrame.getInstance(), CONFIRM_REMOVE_FILE, REMOVE_TITLE, YES_NO_OPTION, QUESTION_MESSAGE);
+            int option = showConfirmDialog(mainFrame, CONFIRM_REMOVE_FILE, REMOVE_TITLE, YES_NO_OPTION, QUESTION_MESSAGE);
             if (option == YES_OPTION) {
                 Backendless.Files.remove(getBackendlessPathFromTreePath(getSelectionPath()), new AsyncCallback<Void>() {
                     @Override
                     public void handleResponse(Void aVoid) {
                         updateModel();
-                        showMessageDialog(MainFrame.getInstance(), FILE_REMOVED, SUCCESS_TITLE, INFORMATION_MESSAGE);
+                        showMessageDialog(mainFrame, FILE_REMOVED, SUCCESS_TITLE, INFORMATION_MESSAGE);
                     }
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-                        showMessageDialog(MainFrame.getInstance(), backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
+                        showMessageDialog(mainFrame, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
                     }
                 });
             }

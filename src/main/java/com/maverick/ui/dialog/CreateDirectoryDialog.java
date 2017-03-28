@@ -18,7 +18,7 @@ public class CreateDirectoryDialog extends JDialog {
 
     private JTextField directoryNameField = new JTextField();
 
-    public CreateDirectoryDialog(Frame owner) {
+    public CreateDirectoryDialog(Frame owner, JTree tree) {
 
         super(owner, true);
         setTitle("Create directory");
@@ -57,7 +57,7 @@ public class CreateDirectoryDialog extends JDialog {
         });
 
         okButton.addActionListener(e -> {
-            String backendlessPath = getBackendlessPathFromTreePath(BackendlessTree.getInstance().getSelectionPath(), directoryNameField.getText());
+            String backendlessPath = getBackendlessPathFromTreePath(tree.getSelectionPath(), directoryNameField.getText());
             try {
                 Backendless.Files.upload(FileUtils.readme, backendlessPath);
             } catch (Exception ex) {

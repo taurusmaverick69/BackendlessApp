@@ -17,16 +17,10 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class LoginFrame extends JFrame {
 
-    private static LoginFrame instance = new LoginFrame();
-
-    public static LoginFrame getInstance() {
-        return instance;
-    }
-
     private JTextField loginField = new JTextField();
     private JTextField passwordField = new JPasswordField();
 
-    private LoginFrame() {
+    public LoginFrame() {
 
         setTitle("Login");
         setLayout(new GridBagLayout());
@@ -62,7 +56,7 @@ public class LoginFrame extends JFrame {
 
             @Override
             public void handleResponse(BackendlessUser backendlessUser) {
-                MainFrame.getInstance();
+                new MainFrame(LoginFrame.this);
                 dispose();
                 setVisible(false);
             }
@@ -76,5 +70,13 @@ public class LoginFrame extends JFrame {
         registrationButton.addActionListener(e -> new RegistrationDialog(LoginFrame.this));
 
         forgotPasswordButton.addActionListener(e -> new ForgotPasswordDialog(LoginFrame.this));
+    }
+
+    public JTextField getLoginField() {
+        return loginField;
+    }
+
+    public JTextField getPasswordField() {
+        return passwordField;
     }
 }

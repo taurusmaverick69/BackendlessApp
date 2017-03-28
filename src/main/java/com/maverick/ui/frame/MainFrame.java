@@ -8,13 +8,7 @@ import java.awt.*;
 
 public class MainFrame extends JFrame {
 
-    private static MainFrame instance = new MainFrame();
-
-    public static MainFrame getInstance() {
-        return instance;
-    }
-
-    private MainFrame() {
+    public MainFrame(LoginFrame loginFrame) {
 
         setTitle("Main");
         setLayout(new GridBagLayout());
@@ -22,8 +16,8 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Profile", ProfilePanel.getInstance());
-        tabbedPane.addTab("Files", BackendlessTree.getInstance());
+        tabbedPane.addTab("Profile", new ProfilePanel(this, loginFrame));
+        tabbedPane.addTab("Files", new BackendlessTree(this));
 
         add(tabbedPane, new GridBagConstraints(0, 0, 10, 10, 1.0, 1.0,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,

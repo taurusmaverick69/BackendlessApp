@@ -2,21 +2,30 @@ package com.maverick.ui;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.maverick.ui.dialog.ChangePasswordDialog;
 import com.maverick.ui.dialog.EditProfileDialog;
+import com.maverick.ui.frame.LoginFrame;
 import com.maverick.ui.frame.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
+import static com.maverick.utils.Messages.ERROR_TITLE;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+
 public class ProfilePanel extends JPanel {
 
-    private static ProfilePanel instance = new ProfilePanel();
+    private MainFrame mainFrame;
+    private LoginFrame loginFrame;
 
-    public static ProfilePanel getInstance() {
-        return instance;
-    }
+    public ProfilePanel(MainFrame mainFrame, LoginFrame loginFrame) {
 
-    private ProfilePanel() {
+        this.mainFrame = mainFrame;
+        this.loginFrame = loginFrame;
+
         setLayout(new GridBagLayout());
         add(getPhotoPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
@@ -26,7 +35,7 @@ public class ProfilePanel extends JPanel {
                 new Insets(10, 10, 0, 10), 0, 0));
     }
 
-    private static JPanel getPhotoPanel() {
+    private JPanel getPhotoPanel() {
 
         JPanel panel = new JPanel(new GridBagLayout());
 
@@ -45,7 +54,7 @@ public class ProfilePanel extends JPanel {
         return panel;
     }
 
-    private static JPanel getInfoPanel() {
+    private JPanel getInfoPanel() {
 
         BackendlessUser backendlessUser = Backendless.UserService.CurrentUser();
         JPanel panel = new JPanel(new GridBagLayout());
@@ -59,11 +68,12 @@ public class ProfilePanel extends JPanel {
         buttonsPanel.add(logoutButton);
 
         JComponent[] components = {
-                new JLabel("Information:"),
+                new JLabel("Information", SwingConstants.CENTER),
                 new JLabel("Name: " + backendlessUser.getProperty("name")),
                 new JLabel("Email: " + backendlessUser.getProperty("email")),
                 new JLabel("Age: " + backendlessUser.getProperty("age")),
                 new JLabel("Sex: " + backendlessUser.getProperty("sex")),
+                new JLabel("Country: " + backendlessUser.getProperty("country")),
                 new JLabel("Last logged: " + backendlessUser.getProperty("lastLogin")),
                 new JLabel("Created: " + backendlessUser.getProperty("created")),
                 buttonsPanel
@@ -74,7 +84,24 @@ public class ProfilePanel extends JPanel {
                     GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                     new Insets(10, 10, 0, 10), 0, 0));
         }
-        editButton.addActionListener(e -> new EditProfileDialog(MainFrame.getInstance()));
+        editButton.addActionListener(e -> new EditProfileDialog(mainFrame));
+        changePasswordButton.addActionListener(e -> new ChangePasswordDialog(mainFrame));
+
+        logoutButton.addActionListener(e -> Backendless.UserService.logout(new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void aVoid) {
+                mainFrame.setVisible(false);
+                mainFrame.dispose();
+                loginFrame.getLoginField().setText("");
+                loginFrame.getPasswordField().setText("");
+                loginFrame.setVisible(true);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                showMessageDialog(mainFrame, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
+            }
+        }));
         return panel;
     }
 }

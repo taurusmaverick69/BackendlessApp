@@ -54,11 +54,11 @@ public class EditProfileDialog extends JDialog {
         add(ageComboBox, getTextFieldGridBagConstraints(1, 2));
 
         sexComboBox.setPreferredSize(new Dimension(200, 30));
-        ageComboBox.setSelectedItem(currentUser.getProperty("sex"));
+        sexComboBox.setSelectedItem(currentUser.getProperty("sex"));
         add(sexComboBox, getTextFieldGridBagConstraints(1, 3));
 
         countryComboBox.setPreferredSize(new Dimension(200, 30));
-        ageComboBox.setSelectedItem(currentUser.getProperty("country"));
+        countryComboBox.setSelectedItem(currentUser.getProperty("country"));
         add(countryComboBox, getTextFieldGridBagConstraints(1, 4));
 
         JPanel panel = new JPanel(new FlowLayout());

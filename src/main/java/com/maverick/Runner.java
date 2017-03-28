@@ -15,6 +15,6 @@ public class Runner {
 
         Backendless.initApp(APP_ID, SECRET_KEY, VERSION);
         UIManager.setLookAndFeel(new SyntheticaPlainLookAndFeel());
-        LoginFrame.getInstance();
+        new LoginFrame();
     }
 }
