@@ -1,8 +1,10 @@
 package com.maverick.ui.frame;
 
+import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.logging.Logger;
 import com.maverick.ui.dialog.ForgotPasswordDialog;
 import com.maverick.ui.dialog.RegistrationDialog;
 
@@ -19,6 +21,9 @@ public class LoginFrame extends JFrame {
 
     private JTextField loginField = new JTextField();
     private JTextField passwordField = new JPasswordField();
+
+    private Logger logger = Backendless.Logging.getLogger("AuthenticationFailedLogger");
+    private static String AUTHENTICATION_FAILED = "Authentication failed with login [%s] and password [%s]";
 
     public LoginFrame() {
 
@@ -63,6 +68,9 @@ public class LoginFrame extends JFrame {
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
+                if ("3003".equals(backendlessFault.getCode())) {
+                    logger.error(String.format(AUTHENTICATION_FAILED, loginField.getText(), passwordField.getText()));
+                }
                 showMessageDialog(LoginFrame.this, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
             }
         }));

@@ -2,23 +2,16 @@ package com.maverick.ui.dialog;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.UserService;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.maverick.utils.Messages.EDIT_PROFILE_COMPLETE;
-import static com.maverick.utils.Messages.ERROR_TITLE;
-import static com.maverick.utils.Messages.SUCCESS_TITLE;
-import static com.maverick.utils.UIUtils.getLabelGridBagConstraints;
-import static com.maverick.utils.UIUtils.getPanelGridBagConstraints;
-import static com.maverick.utils.UIUtils.getTextFieldGridBagConstraints;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
+import static com.maverick.utils.Messages.*;
+import static com.maverick.utils.UIUtils.*;
+import static javax.swing.JOptionPane.*;
 
 public class ChangePasswordDialog extends JDialog {
 
@@ -30,19 +23,17 @@ public class ChangePasswordDialog extends JDialog {
         setResizable(false);
 
         JLabel[] labels = {
-                new JLabel("Current password"),
                 new JLabel("New password"),
                 new JLabel("Confirm password")};
 
         for (int i = 0; i < labels.length; i++)
             add(labels[i], getLabelGridBagConstraints(0, i));
 
-        JTextField currentPasswordField = new JPasswordField();
+
         JTextField newPasswordField = new JPasswordField();
         JTextField confirmPasswordField = new JPasswordField();
 
         JTextField[] fields = {
-                currentPasswordField,
                 newPasswordField,
                 confirmPasswordField};
 
@@ -59,30 +50,30 @@ public class ChangePasswordDialog extends JDialog {
 
         add(panel, getPanelGridBagConstraints(3));
 
+        UserService userService = Backendless.UserService;
+        BackendlessUser user = userService.CurrentUser();
 
         okButton.addActionListener(e -> {
+            if (!newPasswordField.getText().equals(confirmPasswordField.getText())){
+                showMessageDialog(owner, PASSWORDS_DONT_MATCH_WARNING, WARNING_TITLE, WARNING_MESSAGE);
+                return;
+            }
+            user.setPassword(newPasswordField.getText());
+            userService.update(user, new AsyncCallback<BackendlessUser>() {
+                @Override
+                public void handleResponse(BackendlessUser backendlessUser) {
+                    showMessageDialog(owner, PASSWORD_HAS_BEEN_CHANGED, SUCCESS_TITLE, INFORMATION_MESSAGE);
+                    userService.logout();
+                    userService.login(user.getProperty("name").toString(), newPasswordField.getText());
+                    dispose();
+                    setVisible(false);
+                }
 
-//            currentUser.setEmail(emailField.getText());
-//            Map<String, Object> properties = new HashMap<>();
-//            properties.put("name", nameField.getText());
-//            properties.put("sex", sexComboBox.getSelectedItem());
-//            properties.put("country", countryComboBox.getSelectedItem());
-//            properties.put("age", ageComboBox.getSelectedItem());
-//            currentUser.putProperties(properties);
-//
-//            Backendless.UserService.update(currentUser, new AsyncCallback<BackendlessUser>() {
-//                @Override
-//                public void handleResponse(BackendlessUser backendlessUser) {
-//                    showMessageDialog(EditProfileDialog.this, EDIT_PROFILE_COMPLETE, SUCCESS_TITLE, INFORMATION_MESSAGE);
-//                    dispose();
-//                    setVisible(false);
-//                }
-//
-//                @Override
-//                public void handleFault(BackendlessFault backendlessFault) {
-//                    showMessageDialog(EditProfileDialog.this, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
-//                }
-//            });
+                @Override
+                public void handleFault(BackendlessFault backendlessFault) {
+                    showMessageDialog(owner, backendlessFault.getMessage(), ERROR_TITLE, ERROR_MESSAGE);
+                }
+            });
         });
 
         cancelButton.addActionListener(e -> {
