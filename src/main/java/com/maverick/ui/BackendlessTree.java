@@ -1,8 +1,10 @@
 package com.maverick.ui;
 
 import com.backendless.Backendless;
+import com.backendless.Logging;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.logging.Logger;
 import com.maverick.ui.dialog.CreateDirectoryDialog;
 import com.maverick.ui.frame.MainFrame;
 import org.apache.commons.io.FileUtils;
@@ -37,6 +39,10 @@ public class BackendlessTree extends JTree {
     private String userName = Backendless.UserService.CurrentUser().getProperty("name").toString();
 
     public BackendlessTree(MainFrame mainFrame) {
+
+
+        Logging logging = Backendless.Logging;
+        logging.setLogReportingPolicy(1, 1);
 
         setPreferredSize(new Dimension(700, 300));
 
@@ -121,6 +127,8 @@ public class BackendlessTree extends JTree {
                     try {
                         Backendless.Files.upload(file, path);
                     } catch (Exception ex) {
+                        Logger logger = logging.getLogger("UploadFileFailed");
+                        logger.error(String.format(UPLOAD_FAILED, file.getName()));
                         showMessageDialog(mainFrame, String.format(UPLOAD_FAILED, file.getName()), ERROR_TITLE, ERROR_MESSAGE);
                     }
                 });
