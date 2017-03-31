@@ -1,6 +1,7 @@
 package com.maverick.ui.frame;
 
 import com.maverick.ui.BackendlessTree;
+import com.maverick.ui.FeedbackPanel;
 import com.maverick.ui.ProfilePanel;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ public class MainFrame extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Profile", new ProfilePanel(this, loginFrame));
         tabbedPane.addTab("Files", new BackendlessTree(this));
+        tabbedPane.addTab("Feedback", new FeedbackPanel(this));
 
         add(tabbedPane, new GridBagConstraints(0, 0, 10, 10, 1.0, 1.0,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,

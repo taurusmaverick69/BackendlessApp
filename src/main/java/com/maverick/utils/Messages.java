@@ -25,5 +25,6 @@ public class Messages {
 
     public static final String EDIT_PROFILE_COMPLETE = "Profile successfully updated";
 
-    public static final String PASSWORD_HAS_BEEN_CHANGED  = "Password has been changed";
+    public static final String PASSWORD_HAS_BEEN_CHANGED = "Password has been changed";
+    public static final String MESSAGE_HAS_BEEN_SENT = "Message has been sent";
 }

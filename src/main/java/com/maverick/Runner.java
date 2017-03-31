@@ -24,49 +24,31 @@ public class Runner {
 
     public static void main(String[] args) throws ParseException, UnsupportedLookAndFeelException, IOException {
 
+        Backendless.initApp(APP_ID, SECRET_KEY, VERSION);
+        UIManager.setLookAndFeel(new SyntheticaPlainLookAndFeel());
+        new LoginFrame();
 
-
-        final String value = System.getenv("PE_CONF_PWD");
-
-        Properties properties = System.getProperties();
-
-        Map<String, String> getenv = System.getenv();
-
-
-
-//        Backendless.initApp(APP_ID, SECRET_KEY, VERSION);
-//
-//
 //        Persistence data = Backendless.Data;
-//
-//
 //        Backendless.Messaging.sendHTMLEmail("Subject1", "This is Body1", "taurusmaverick69@gmail.com");
 //        Backendless.Messaging.sendTextEmail("Subject2", "<h1>This is Body2<h1>", "taurusmaverick69@gmail.com");
 
       //  HashMap entity = new HashMap();
       //  entity.put("qe", "rq");
-
      //   data.create(Product.class, new HashMap());
-
        // data.of(Product.class).save(new Product());
-
 
 //        Product e = new Product();
 //        e.setCost(1);
 //        e.setName("Ivan");
 
 //        data.of(BackendlessUser.class).find(new BackendlessDataQuery())
-//
+
 //       data.of(Product.class).find().getData().forEach(product -> {
 //           System.out.println(product);
 //       });
 
-
 //        Map<String, String> e = new HashMap<>();
 //        e.put("test", "yest");
 //        myTable.save(e);
-
-//        UIManager.setLookAndFeel(new SyntheticaPlainLookAndFeel());
-//        new LoginFrame();
     }
 }
