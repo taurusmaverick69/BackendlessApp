@@ -25,8 +25,22 @@ public class Runner {
     public static void main(String[] args) throws ParseException, UnsupportedLookAndFeelException, IOException {
 
         Backendless.initApp(APP_ID, SECRET_KEY, VERSION);
-        UIManager.setLookAndFeel(new SyntheticaPlainLookAndFeel());
-        new LoginFrame();
+//        UIManager.setLookAndFeel(new SyntheticaPlainLookAndFeel());
+//        new LoginFrame();
+
+        HashMap<Object, Object> eventArgs = new HashMap<>();
+        eventArgs.put("1", "2");
+        Backendless.Events.dispatch("MyEvent", eventArgs, new AsyncCallback<Map>() {
+            @Override
+            public void handleResponse(Map map) {
+                System.out.println(map.get("key"));
+            }
+
+            @Override
+            public void handleFault(BackendlessFault backendlessFault) {
+                System.out.println(backendlessFault);
+            }
+        });
 
 //        Persistence data = Backendless.Data;
 //        Backendless.Messaging.sendHTMLEmail("Subject1", "This is Body1", "taurusmaverick69@gmail.com");
